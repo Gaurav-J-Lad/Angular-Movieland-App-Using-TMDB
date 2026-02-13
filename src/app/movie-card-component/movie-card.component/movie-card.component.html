@@ -1,0 +1,70 @@
+<!-- MOVIE CARD -->
+<!-- Bootstrap attribute: opens modal on click -->
+<!-- Dynamic modal target (unique per movie) -->
+<div
+  class="card h-100 shadow-lg movie-card"
+  style="cursor: pointer"
+  data-bs-toggle="modal"
+  [attr.data-bs-target]="'#movieModal' + movie.id"
+>
+  <!-- Movie poster -->
+  <img [src]="getImageUrl(movie.poster_path)" class="card-img-top" [alt]="movie.title" />
+
+  <!-- Card content -->
+  <div class="card-body">
+    <h5 class="card-title fs-2">{{ movie.title }}</h5>
+
+    <p class="card-text mb-1 fs-3"><strong>Rating:</strong> {{ movie.vote_average }}</p>
+
+    <p class="card-text fs-3"><strong>Release:</strong> {{ movie.release_date }}</p>
+  </div>
+</div>
+
+<!-- MOVIE DETAILS MODAL -->
+<!-- Dynamic ID so each movie has its own modal -->
+<div class="modal fade" [id]="'movieModal' + movie.id" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-centered">
+    <div class="modal-content">
+      <!-- Modal Header -->
+      <div class="modal-header">
+        <h5 class="modal-title fs-1">{{ movie.title }}</h5>
+
+        <!-- Bootstrap close button -->
+        <button
+          type="button"
+          class="btn-close px-4 fs-2"
+          data-bs-dismiss="modal"
+          aria-label="Close"
+        ></button>
+      </div>
+
+      <!-- Modal Body -->
+      <div class="modal-body">
+        <div class="row">
+          <!-- Movie Poster -->
+          <div class="col-md-4">
+            <img [src]="getImageUrl(movie.poster_path)" class="img-fluid rounded" />
+          </div>
+
+          <!-- Movie Details -->
+          <div class="col-md-8">
+            <p class="fs-5"><strong>Overview:</strong> {{ movie.overview }}</p>
+            <p class="fs-5"><strong>Rating:</strong> {{ movie.vote_average }}</p>
+            <p class="fs-5"><strong>Release Date:</strong> {{ movie.release_date }}</p>
+            <p class="fs-5">
+              <strong>Language:</strong>
+              {{ movie.original_language | uppercase }}
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Modal Footer -->
+      <div class="modal-footer fw-bold">
+        <button type="button" class="btn btn-secondary fs-2 px-5" data-bs-dismiss="modal">
+          Close
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

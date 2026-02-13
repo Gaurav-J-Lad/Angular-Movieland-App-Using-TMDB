@@ -1,0 +1,162 @@
+<div class="container-fluid p-0">
+  <!-- NAVBAR -->
+  <nav class="navbar navbar-expand-lg navbar-dark bg-dark shadow">
+    <div class="container">
+      <a class="navbar-brand fw-bold text-white fs-1" href="#"> 🎬 MovieLand </a>
+
+      <form class="d-flex align-items-center" (submit)="searchMovies(); $event.preventDefault()">
+        <div class="input-group input-group-lg">
+          <span class="input-group-text bg-secondary border-0 text-white">
+            <i class="bi bi-search"></i>
+          </span>
+
+          <input
+            class="form-control bg-dark text-white border-secondary"
+            type="search"
+            placeholder="Search movies..."
+            [(ngModel)]="query"
+            [ngModelOptions]="{ standalone: true }"
+          />
+
+          <button class="btn btn-danger ms-2">Search</button>
+
+          @if (isSearching) {
+            <button type="button" class="btn btn-outline-light ms-2" (click)="clearSearch()">
+              ✕
+            </button>
+          }
+        </div>
+      </form>
+    </div>
+  </nav>
+
+  <!-- SEARCH VIEW -->
+  @if (isSearching) {
+    <div class="container-fluid py-5 px-5 bg-dark">
+      <h3 class="fw-bold mb-4 text-white fs-1 py-5">Search Results for "{{ query }}"</h3>
+
+      <div class="row g-4">
+        @for (movie of searchedMovies; track movie.id) {
+          <div class="col-md-3 col-sm-6">
+            <app-movie-card [movie]="movie"></app-movie-card>
+          </div>
+        }
+      </div>
+
+      @if (searchedMovies.length === 0) {
+        <p class="mt-4 text-center text-white fs-1 fw-bold">No movies found 😔</p>
+      }
+    </div>
+  }
+
+  <!-- HOME VIEW -->
+  @if (!isSearching) {
+    <!-- Trending Carousel -->
+    <div id="trendingCarousel" class="carousel slide" data-bs-ride="carousel">
+      <div class="carousel-indicators">
+        @for (movie of trending; let i = $index; track movie.id) {
+          <button
+            type="button"
+            data-bs-target="#trendingCarousel"
+            [attr.data-bs-slide-to]="i"
+            [class.active]="i === 0"
+            [attr.aria-current]="i === 0 ? 'true' : null"
+            [attr.aria-label]="'Slide ' + (i + 1)"
+          ></button>
+        }
+      </div>
+
+      <div class="carousel-inner">
+        @for (movie of trending; let i = $index; track movie.id) {
+          <div class="carousel-item" [class.active]="i === 0">
+            <img
+              [src]="'https://image.tmdb.org/t/p/original' + movie.backdrop_path"
+              class="d-block w-100"
+              style="height: 80vh; object-fit: cover"
+            />
+
+            <div class="carousel-caption bg-dark bg-opacity-50 rounded p-3">
+              <h4>{{ movie.title }}</h4>
+              <p class="d-none d-md-block">{{ movie.overview | slice: 0 : 120 }}...</p>
+            </div>
+          </div>
+        }
+      </div>
+
+      <button
+        class="carousel-control-prev"
+        type="button"
+        data-bs-target="#trendingCarousel"
+        data-bs-slide="prev"
+      >
+        <span class="carousel-control-prev-icon"></span>
+      </button>
+
+      <button
+        class="carousel-control-next"
+        type="button"
+        data-bs-target="#trendingCarousel"
+        data-bs-slide="next"
+      >
+        <span class="carousel-control-next-icon"></span>
+      </button>
+    </div>
+
+    <!-- Popular Movies -->
+    <div class="container-fluid bg-body-secondary py-5">
+      <div class="container-fluid">
+        <h3 class="fw-bold mb-4 fs-1 text-dark text-center py-5">Popular Movies</h3>
+
+        <div class="row g-4">
+          @for (movie of popular; track movie.id) {
+            <div class="col-md-3 col-sm-6">
+              <app-movie-card [movie]="movie"></app-movie-card>
+            </div>
+          }
+        </div>
+      </div>
+    </div>
+
+    <!-- All Movies + Pagination -->
+    <div class="container-fluid bg-dark py-5">
+      <div class="container-fluid">
+        <h3 class="fw-bold mb-4 fs-1 text-white text-center py-5">All Movies</h3>
+
+        <div class="row g-4">
+          @for (movie of allMovies; track movie.id) {
+            <div class="col-md-3 col-sm-6">
+              <app-movie-card [movie]="movie"></app-movie-card>
+            </div>
+          }
+        </div>
+
+        <!-- Pagination -->
+        <nav class="d-flex justify-content-center mt-5">
+          <ul class="pagination pagination-lg">
+            <!-- Previous -->
+            <li class="page-item" [class.disabled]="currentPage === 1">
+              <button class="page-link" (click)="changePage(currentPage - 1)">Previous</button>
+            </li>
+
+            <!-- Page Numbers -->
+            @for (page of pages; track page) {
+              <li class="page-item" [class.active]="currentPage === page">
+                <button class="page-link" (click)="changePage(page)">
+                  {{ page }}
+                </button>
+              </li>
+            }
+
+            <!-- Next -->
+            <li class="page-item" [class.disabled]="currentPage === totalPages">
+              <button class="page-link" (click)="changePage(currentPage + 1)">Next</button>
+            </li>
+          </ul>
+        </nav>
+      </div>
+    </div>
+  }
+</div>
+
+<!-- Global Loader -->
+<app-loader></app-loader>

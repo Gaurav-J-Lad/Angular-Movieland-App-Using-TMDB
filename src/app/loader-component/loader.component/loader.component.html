@@ -1,0 +1,12 @@
+<!-- Full screen overlay with spinner -->
+@if (loaderService.loading$ | async) {
+  <div
+    *ngIf=""
+    class="d-flex justify-content-center align-items-center position-fixed w-100 vh-100 top-0 start-0 bg-dark bg-opacity-50"
+    style="z-index: 1050"
+  >
+    <div class="spinner-border text-danger" role="status" style="width: 4rem; height: 4rem">
+      <span class="visually-hidden">Loading...</span>
+    </div>
+  </div>
+}
